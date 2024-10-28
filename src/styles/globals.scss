@@ -1,7 +1,51 @@
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-// TODO
+:root {
+  --pink-500: #FF57B2; // Highlight
+
+  --gray-100: #F8F8F8; // Heading
+  --gray-200: #D7D7D7; // Body
+  --gray-300: #BBBBBB; // Info
+
+  --blue-900: #1A1D23; // Background
+}
+
+@media (max-width: 1080px) {
+  html {
+    font-size: 93.75%; // 15px
+  }
+}
+
+@media (max-width: 720px) {
+  html {
+    font-size: 87.5%; // 14px
+  }
+}
+
+body {
+  background-color: var(--blue-900);
+  color: var(--gray-200);
+}
+
+body,
+input,
+textarea,
+select,
+button {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
