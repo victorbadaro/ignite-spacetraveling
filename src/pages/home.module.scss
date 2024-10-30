@@ -1,3 +1,7 @@
+.posts-container {
+  padding-bottom: 5rem;
+}
+
 .posts {
   a {
     display: block;
@@ -16,28 +20,6 @@
     p {
       margin-top: 0.5rem;
       font-size: 1.125rem;
-    }
-
-    .info {
-      display: flex;
-      align-items: center;
-      column-gap: 1.5rem;
-      margin-top: 1.5rem;
-      color: var(--gray-300);
-
-      time {
-        display: flex;
-        align-items: center;
-        column-gap: 0.5rem;
-        font-size: 0.875rem;
-      }
-
-      span {
-        display: flex;
-        align-items: center;
-        column-gap: 0.5rem;
-        font-size: 0.875rem;
-      }
     }
   }
 }

@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
+import { useState } from 'react';
 import { FiCalendar, FiUser } from 'react-icons/fi';
 import { getPrismicClient } from '../services/prismic';
 
@@ -29,15 +30,41 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
+  const [posts, setPosts] = useState(postsPagination.results);
+  const [nextPage, setNextPage] = useState(postsPagination.next_page);
+
+  async function handleLoadPosts(): Promise<void> {
+    const response = await fetch(postsPagination.next_page);
+    const data = await response.json();
+    const formattedPosts = data.results.map(post => ({
+      uid: post.uid,
+      first_publication_date: format(
+        new Date(post.first_publication_date),
+        'dd MMM yyyy',
+        {
+          locale: ptBR,
+        }
+      ),
+      data: {
+        title: post.data.title,
+        subtitle: post.data.subtitle,
+        author: post.data.author,
+      },
+    }));
+
+    setPosts(formattedPosts);
+    setNextPage(data.next_page);
+  }
+
   return (
-    <main className={commonStyles.container}>
+    <main className={`${commonStyles.container} ${styles['posts-container']}`}>
       <div className={styles.posts}>
-        {postsPagination.results.map(post => (
+        {posts.map(post => (
           <Link key={post.uid} href={`/post/${post.uid}`}>
             <a>
               <strong>{post.data.title}</strong>
               <p>{post.data.subtitle}</p>
-              <div className={styles.info}>
+              <div className={commonStyles.info}>
                 <time>
                   <FiCalendar size={20} /> {post.first_publication_date}
                 </time>
@@ -50,8 +77,12 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         ))}
       </div>
 
-      {postsPagination.next_page && (
-        <button type="button" className={styles['load-posts-button']}>
+      {nextPage && (
+        <button
+          type="button"
+          className={styles['load-posts-button']}
+          onClick={handleLoadPosts}
+        >
           Carregar mais posts
         </button>
       )}
