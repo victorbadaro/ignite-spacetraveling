@@ -33,10 +33,8 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
   const [posts, setPosts] = useState(postsPagination.results);
   const [nextPage, setNextPage] = useState(postsPagination.next_page);
 
-  async function handleLoadPosts(): Promise<void> {
-    const response = await fetch(postsPagination.next_page);
-    const data = await response.json();
-    const formattedPosts = data.results.map(post => ({
+  function formatPosts(postsToBeFormatted: Post[]): Post[] {
+    const formattedPosts = postsToBeFormatted.map(post => ({
       uid: post.uid,
       first_publication_date: format(
         new Date(post.first_publication_date),
@@ -52,14 +50,23 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
       },
     }));
 
-    setPosts(formattedPosts);
+    return formattedPosts;
+  }
+
+  async function handleLoadPosts(): Promise<void> {
+    const response = await fetch(postsPagination.next_page);
+    const data = await response.json();
+
+    setPosts(data.results);
     setNextPage(data.next_page);
   }
+
+  const formattedPosts = formatPosts(posts);
 
   return (
     <main className={`${commonStyles.container} ${styles['posts-container']}`}>
       <div className={styles.posts}>
-        {posts.map(post => (
+        {formattedPosts.map(post => (
           <Link key={post.uid} href={`/post/${post.uid}`}>
             <a>
               <strong>{post.data.title}</strong>
@@ -104,13 +111,7 @@ export const getStaticProps: GetStaticProps<{
 
   const posts = postsResponse.results.map(post => ({
     uid: post.uid,
-    first_publication_date: format(
-      new Date(post.first_publication_date),
-      'dd MMM yyyy',
-      {
-        locale: ptBR,
-      }
-    ),
+    first_publication_date: post.first_publication_date,
     data: {
       title: post.data.title,
       subtitle: post.data.subtitle,
