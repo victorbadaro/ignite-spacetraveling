@@ -173,13 +173,16 @@ const mockedGetByUIDReturn = {
 
 jest.mock('@prismicio/client');
 jest.mock('../../services/prismic');
-jest.mock('next/router');
-const mockedUseRouter = useRouter as jest.Mock;
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
+
 const mockedPrismic = getPrismicClient as jest.Mock;
 
 describe('Post', () => {
   beforeAll(() => {
-    mockedUseRouter.mockReturnValue({
+    (useRouter as jest.Mock).mockReturnValue({
       isFallback: false,
     });
 
@@ -248,7 +251,7 @@ describe('Post', () => {
   });
 
   it('should be able to render loading message if fallback', () => {
-    mockedUseRouter.mockReturnValueOnce({
+    (useRouter as jest.Mock).mockReturnValue({
       isFallback: true,
     });
 

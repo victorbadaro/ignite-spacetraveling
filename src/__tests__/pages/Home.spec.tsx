@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { GetStaticPropsContext } from 'next';
-import { RouterContext } from 'next/dist/next-server/lib/router-context';
+import { RouterContext } from 'next/dist/shared/lib/router-context';
 import { ParsedUrlQuery } from 'querystring';
 
 import App, { getStaticProps } from '../../pages';
@@ -157,17 +157,13 @@ describe('Home', () => {
     fireEvent.click(firstPostTitle);
     fireEvent.click(secondPostTitle);
 
-    expect(mockedPush).toHaveBeenNthCalledWith(
-      1,
-      '/post/como-utilizar-hooks',
-      expect.anything(),
-      expect.anything()
-    );
+    expect(mockedPush).toHaveBeenNthCalledWith(1, '/post/como-utilizar-hooks', {
+      forceOptimisticNavigation: false,
+    });
     expect(mockedPush).toHaveBeenNthCalledWith(
       2,
       '/post/criando-um-app-cra-do-zero',
-      expect.anything(),
-      expect.anything()
+      { forceOptimisticNavigation: false }
     );
   });
 
